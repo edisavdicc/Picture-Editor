@@ -4,6 +4,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.FlowPane;
@@ -31,7 +32,7 @@ public class InvertView extends VBox { // if we want to add a MenuBar, the main 
     }
 
     void addEventHandlers(InvertController controller) {
-        EventHandler<ActionEvent> invertHandler = event -> {System.out.println("huh?");controller.onInvertSelected();
+        EventHandler<ActionEvent> invertHandler = event -> {System.out.println("image");controller.onInvertSelected();
             };
         invertButton.addEventHandler(ActionEvent.ACTION, invertHandler);
     }
