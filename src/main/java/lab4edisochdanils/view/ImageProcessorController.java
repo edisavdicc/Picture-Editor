@@ -4,6 +4,8 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.MenuItem;
 import javafx.scene.image.Image;
+import lab4edisochdanils.model.GrayScale;
+import lab4edisochdanils.model.IPixelProcessor;
 import lab4edisochdanils.model.ImageModel;
 import lab4edisochdanils.utils.ImagePixelsConverter;
 
@@ -46,6 +48,14 @@ public class ImageProcessorController {
         invertOperationView = new InvertOperationView();
         invertOperationView.setInvertHandler(this::onInvertSelected);
         mainView.addOperationView(invertOperationView);
+    }
+    
+    public void onGrayScaleSelected(){
+        IPixelProcessor processor = new GrayScale();
+        int[][] newPixels = processor.process(model.getCurrentPixels());
+        model.setCurrentPixels(newPixels);
+        Image newImage = ImagePixelsConverter.pixelsToImage(newPixels);
+        mainView.setCurrentImage(newImage);
     }
 
     public void onLoadImage(ActionEvent event) {

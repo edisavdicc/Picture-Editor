@@ -34,7 +34,7 @@ public class InvertApplication extends Application {
         ImageModel model = new ImageModel();
         ImageProcessorController controller = new ImageProcessorController(view, model);
 
-        Scene scene = new Scene(view, 1400, 800);
+        Scene scene = new Scene(view,  800, 600);
         stage.setTitle("Image Processing App with Histogram");
         stage.setMinWidth(1000);
         stage.setMinHeight(600);

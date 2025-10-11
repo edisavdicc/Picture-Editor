@@ -63,8 +63,11 @@ public class ImageProcessorView extends VBox {
         
         Menu editMenu = new Menu("Edit");
         MenuItem invertItem = new MenuItem("Invert Colors");
+        MenuItem grayScaleItem = new MenuItem("Gray Scale");
         MenuItem resetItem = new MenuItem("Reset to Original");
-        editMenu.getItems().addAll(invertItem, resetItem);
+        editMenu.getItems().addAll(invertItem, grayScaleItem, resetItem);
+
+
         
         menuBar.getMenus().addAll(fileMenu, editMenu);
     }

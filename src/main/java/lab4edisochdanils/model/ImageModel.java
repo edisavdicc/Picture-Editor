@@ -8,12 +8,14 @@ package lab4edisochdanils.model;
 public class ImageModel {
     private int[][] originalPixels;
     private int[][] currentPixels;
-    private Histogram histogram;
-    private InvertColors invertProcessor;
+    private Histogram histoGram;
+    private InvertColors invertColors;
+    private GrayScale grayScale;
     
     public ImageModel() {
-        this.histogram = new Histogram();
-        this.invertProcessor = new InvertColors();
+        this.histoGram = new Histogram();
+        this.invertColors = new InvertColors();
+        this.grayScale = new GrayScale();
     }
     
     /**
@@ -32,7 +34,11 @@ public class ImageModel {
     public int[][] getCurrentPixels() {
         return copyPixels(currentPixels);
     }
-    
+
+    public void setCurrentPixels(int[][] currentPixels) {
+        this.currentPixels = currentPixels;
+    }
+
     /**
      * Get the original pixel matrix
      * @return original pixel matrix
@@ -46,7 +52,7 @@ public class ImageModel {
      */
     public void invertColors() {
         if (currentPixels != null) {
-            this.currentPixels = invertProcessor.process(currentPixels);
+            this.currentPixels = invertColors.process(currentPixels);
         }
     }
     
@@ -65,7 +71,7 @@ public class ImageModel {
      */
     public int[][] calculateHistogram() {
         if (currentPixels != null) {
-            return histogram.calculateHistogram(currentPixels);
+            return histoGram.calculateHistogram(currentPixels);
         }
         return new int[256][3]; // Empty histogram
     }
