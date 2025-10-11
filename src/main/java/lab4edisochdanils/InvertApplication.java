@@ -2,7 +2,9 @@ package lab4edisochdanils;
 
 import javafx.application.Application;
 import javafx.scene.Scene;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
+import javafx.scene.layout.StackPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import lab4edisochdanils.model.InvertColors;
@@ -34,7 +36,15 @@ public class InvertApplication extends Application {
         InvertColors model = new InvertColors();
         InvertController controller = new InvertController(view, model);
 
-        Scene scene = new Scene(view, 1000, 630);
+        ScrollPane scrollPane = new ScrollPane();
+        scrollPane.setContent(view);
+        scrollPane.setPannable(true);
+        scrollPane.setFitToWidth(true);
+        scrollPane.setFitToHeight(true);
+        StackPane root = new StackPane(scrollPane);
+
+
+        Scene scene = new Scene(root, 1000, 630);
         stage.setTitle("Invert Colors App");
         stage.setScene(scene);
         stage.show();
