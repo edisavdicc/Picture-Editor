@@ -5,7 +5,7 @@ import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import lab4edisochdanils.model.InvertColors;
+import lab4edisochdanils.model.ImageModel;
 import lab4edisochdanils.view.ImageProcessorController;
 import lab4edisochdanils.view.ImageProcessorView;
 
@@ -31,7 +31,7 @@ public class InvertApplication extends Application {
 
         // Ny MVC-struktur med ImageProcessorView som huvudcontainer
         ImageProcessorView view = new ImageProcessorView(originalImage);
-        InvertColors model = new InvertColors();
+        ImageModel model = new ImageModel();
         ImageProcessorController controller = new ImageProcessorController(view, model);
 
         Scene scene = new Scene(view, 1400, 800);

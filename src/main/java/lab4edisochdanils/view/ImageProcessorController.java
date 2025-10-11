@@ -4,25 +4,25 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.MenuItem;
 import javafx.scene.image.Image;
-import lab4edisochdanils.model.Histogram;
-import lab4edisochdanils.model.InvertColors;
+import lab4edisochdanils.model.ImageModel;
 import lab4edisochdanils.utils.ImagePixelsConverter;
 
 public class ImageProcessorController {
     private ImageProcessorView mainView;
-    private InvertColors invertModel;
-    private Histogram histogramCalculator;
+    private ImageModel model;
     private InvertOperationView invertOperationView;
 
-    public ImageProcessorController(ImageProcessorView view, InvertColors model) {
+    public ImageProcessorController(ImageProcessorView view, ImageModel model) {
         this.mainView = view;
-        this.invertModel = model;
-        this.histogramCalculator = new Histogram();
+        this.model = model;
 
         setupMenuHandlers();
         showInvertOperation();
         
-        // Beräkna och visa histogram för den ursprungliga bilden
+        // Load initial image and calculate histogram
+        Image initialImage = mainView.getCurrentImage();
+        int[][] initialPixels = ImagePixelsConverter.imageToPixels(initialImage);
+        model.loadImage(initialPixels);
         updateHistogram();
     }
 
@@ -48,41 +48,37 @@ public class ImageProcessorController {
         mainView.addOperationView(invertOperationView);
     }
 
-    private void onLoadImage(ActionEvent event) {
+    public void onLoadImage(ActionEvent event) {
         // TODO: Implementera FileChooser för att ladda bilder
         System.out.println("Load image - not implemented yet");
     }
 
-    private void onSaveImage(ActionEvent event) {
+    public void onSaveImage(ActionEvent event) {
         // TODO: Implementera FileChooser för att spara bilder
         System.out.println("Save image - not implemented yet");
     }
 
     public void onInvertSelected(ActionEvent event) {
-        // Hämta pixelrepresentation av den aktuella bilden
-        Image img = mainView.getCurrentImage();
-        int[][] pixels = ImagePixelsConverter.imageToPixels(img);
-
-        // Modifiera pixlarna
-        int[][] inverted = invertModel.process(pixels);
-
-        // Sätt den nya bilden
-        Image invertedImg = ImagePixelsConverter.pixelsToImage(inverted);
-        mainView.setCurrentImage(invertedImg);
-
-        // Uppdatera histogram
+        // Apply invert operation in model
+        model.invertColors();
+        
+        // Get processed pixels from model and update view
+        int[][] processedPixels = model.getCurrentPixels();
+        Image processedImage = ImagePixelsConverter.pixelsToImage(processedPixels);
+        mainView.setCurrentImage(processedImage);
+        
+        // Calculate and update histogram from model data
         updateHistogram();
     }
 
-    private void onResetToOriginal(ActionEvent event) {
+    public void onResetToOriginal(ActionEvent event) {
         // TODO: Implementera reset till originalbild
         System.out.println("Reset to original - not implemented yet");
     }
 
-    private void updateHistogram() {
-        Image img = mainView.getCurrentImage();
-        int[][] pixels = ImagePixelsConverter.imageToPixels(img);
-        int[][] histogram = histogramCalculator.calculateHistogram(pixels);
+    public void updateHistogram() {
+        // Calculate histogram directly from model's current pixels
+        int[][] histogram = model.calculateHistogram();
         mainView.updateHistogram(histogram);
     }
 }
