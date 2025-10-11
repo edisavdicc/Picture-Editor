@@ -2,14 +2,12 @@ package lab4edisochdanils;
 
 import javafx.application.Application;
 import javafx.scene.Scene;
-import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
-import javafx.scene.layout.StackPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import lab4edisochdanils.model.InvertColors;
-import lab4edisochdanils.view.InvertController;
-import lab4edisochdanils.view.InvertView;
+import lab4edisochdanils.view.ImageProcessorController;
+import lab4edisochdanils.view.ImageProcessorView;
 
 import java.io.IOException;
 
@@ -23,6 +21,7 @@ public class InvertApplication extends Application {
         FileChooser.ExtensionFilter filter = new FileChooser.ExtensionFilter("Image files", "*.png", ".jpg", "*.bmp");
         fileChooser.getExtensionFilters().add(filter);
     }
+    
     @Override
     public void start(Stage stage) throws IOException {
 
@@ -30,22 +29,15 @@ public class InvertApplication extends Application {
         // Use a FileChooser in your application
         Image originalImage = new Image(this.getClass().getResource("images/devil.png").toString());
 
-        // NB! This is a demonstration of the ImagePixelsConverter interface
-        // Your application should implement the model-view-controller design pattern
-        InvertView view = new InvertView(originalImage);
+        // Ny MVC-struktur med ImageProcessorView som huvudcontainer
+        ImageProcessorView view = new ImageProcessorView(originalImage);
         InvertColors model = new InvertColors();
-        InvertController controller = new InvertController(view, model);
+        ImageProcessorController controller = new ImageProcessorController(view, model);
 
-        ScrollPane scrollPane = new ScrollPane();
-        scrollPane.setContent(view);
-        scrollPane.setPannable(true);
-        scrollPane.setFitToWidth(true);
-        scrollPane.setFitToHeight(true);
-        StackPane root = new StackPane(scrollPane);
-
-
-        Scene scene = new Scene(root, 1000, 630);
-        stage.setTitle("Invert Colors App");
+        Scene scene = new Scene(view, 1400, 800);
+        stage.setTitle("Image Processing App with Histogram");
+        stage.setMinWidth(1000);
+        stage.setMinHeight(600);
         stage.setScene(scene);
         stage.show();
     }
