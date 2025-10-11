@@ -34,18 +34,6 @@ public class ImageModel {
     public int[][] getCurrentPixels() {
         return copyPixels(currentPixels);
     }
-
-    public void setCurrentPixels(int[][] currentPixels) {
-        this.currentPixels = currentPixels;
-    }
-
-    /**
-     * Get the original pixel matrix
-     * @return original pixel matrix
-     */
-    public int[][] getOriginalPixels() {
-        return copyPixels(originalPixels);
-    }
     
     /**
      * Apply invert colors operation
@@ -53,6 +41,15 @@ public class ImageModel {
     public void invertColors() {
         if (currentPixels != null) {
             this.currentPixels = invertColors.process(currentPixels);
+        }
+    }
+
+    /**
+     * Apply grayscale operation
+     */
+    public void grayScale() {
+        if (currentPixels != null) {
+            this.currentPixels = grayScale.process(currentPixels);
         }
     }
     
@@ -74,25 +71,6 @@ public class ImageModel {
             return histoGram.calculateHistogram(currentPixels);
         }
         return new int[256][3]; // Empty histogram
-    }
-    
-    /**
-     * Check if an image is loaded
-     * @return true if image is loaded
-     */
-    public boolean isImageLoaded() {
-        return currentPixels != null;
-    }
-    
-    /**
-     * Get image dimensions
-     * @return array with [width, height] or [0, 0] if no image
-     */
-    public int[] getImageDimensions() {
-        if (currentPixels != null) {
-            return new int[]{currentPixels.length, currentPixels[0].length};
-        }
-        return new int[]{0, 0};
     }
     
     /**

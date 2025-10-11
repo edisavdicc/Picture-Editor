@@ -1,29 +1,34 @@
 package lab4edisochdanils.view;
 
-import javafx.geometry.Pos;
-import javafx.scene.control.Button;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import lab4edisochdanils.model.ImageModel;
+import lab4edisochdanils.utils.ImagePixelsConverter;
 
 public class ImageProcessorView extends VBox {
     private ImageView imageView;
     private ScrollPane scrollPane;
     private HistogramView histogramView;
     private MenuBar menuBar;
-    private VBox operationPanel;
-    private Image currentImage;
+    
+    // MenuItem referenser för att undvika bräcklig indexering
+    private MenuItem loadItem;
+    private MenuItem saveItem;
+    private MenuItem grayScaleItem;
+    private MenuItem invertItem;
+    private MenuItem resetItem;
 
-    public ImageProcessorView(Image img) {
-        this.currentImage = img;
+    public ImageProcessorView(Image img, ImageModel model) {
         this.imageView = new ImageView();
-        this.imageView.setImage(currentImage);
+        this.imageView.setImage(img);
         this.imageView.setPreserveRatio(true);
 
         // ScrollPane för bilden
@@ -35,77 +40,98 @@ public class ImageProcessorView extends VBox {
         // Histogram
         this.histogramView = new HistogramView();
 
-        // Skapa menyrad
-        createMenuBar();
-
-        // Skapa operation panel
-        this.operationPanel = new VBox();
-        this.operationPanel.setAlignment(Pos.CENTER);
-        this.operationPanel.setSpacing(10);
-
-        // Layout: meny, sedan HBox med histogram + bild, sedan operation panel
+        // Layout: meny, sedan HBox med histogram + bild
         HBox mainContent = new HBox();
         mainContent.setSpacing(10);
         mainContent.getChildren().addAll(histogramView, scrollPane);
 
-        this.setAlignment(Pos.CENTER);
-        this.setSpacing(10.0);
-        this.getChildren().addAll(menuBar, mainContent, operationPanel);
+        // Initiera modellen med bilden
+        int[][] initialPixels = ImagePixelsConverter.imageToPixels(img);
+        model.loadImage(initialPixels);
+
+        // Skapa Controller här i View
+        ImageProcessorController controller = new ImageProcessorController(model, this);
+
+        // Skapa menubar
+        createMenuBar();
+
+        // Koppla event handlers
+        addEventHandlers(controller);
+
+        // Uppdatera histogram initialt
+        int[][] histogram = model.calculateHistogram();
+        histogramView.updateView(histogram);
+
+        this.getChildren().addAll(menuBar, mainContent);
     }
 
     private void createMenuBar() {
-        this.menuBar = new MenuBar();
-        
         Menu fileMenu = new Menu("File");
-        MenuItem loadItem = new MenuItem("Load Image...");
-        MenuItem saveItem = new MenuItem("Save Image...");
+        loadItem = new MenuItem("Load Image...");
+        saveItem = new MenuItem("Save Image...");
         fileMenu.getItems().addAll(loadItem, saveItem);
-        
-        Menu editMenu = new Menu("Edit");
-        MenuItem invertItem = new MenuItem("Invert Colors");
-        MenuItem grayScaleItem = new MenuItem("Gray Scale");
-        MenuItem resetItem = new MenuItem("Reset to Original");
-        editMenu.getItems().addAll(invertItem, grayScaleItem, resetItem);
 
+        Menu processMenu = new Menu("Process");
+        grayScaleItem = new MenuItem("Gray scale");
+        invertItem = new MenuItem("Invert colors");
+        resetItem = new MenuItem("Restore original");
+        processMenu.getItems().addAll(grayScaleItem, invertItem, resetItem);
 
-        
-        menuBar.getMenus().addAll(fileMenu, editMenu);
+        Menu helpMenu = new Menu("Help");
+
+        menuBar = new MenuBar();
+        menuBar.getMenus().addAll(fileMenu, processMenu, helpMenu);
     }
 
-    public void addOperationView(VBox operationView) {
-        operationPanel.getChildren().add(operationView);
-    }
+    private void addEventHandlers(ImageProcessorController controller) {
+        // File menu handlers
+        EventHandler<ActionEvent> loadHandler = new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                controller.onLoadImage(event);
+            }
+        };
+        loadItem.addEventHandler(ActionEvent.ACTION, loadHandler);
 
-    public void clearOperationViews() {
-        operationPanel.getChildren().clear();
+        EventHandler<ActionEvent> saveHandler = new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                controller.onSaveImage(event);
+            }
+        };
+        saveItem.addEventHandler(ActionEvent.ACTION, saveHandler);
+
+        // Process menu handlers
+        EventHandler<ActionEvent> grayScaleHandler = new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                controller.onGrayScaleSelected(event);
+            }
+        };
+        grayScaleItem.addEventHandler(ActionEvent.ACTION, grayScaleHandler);
+
+        EventHandler<ActionEvent> invertHandler = new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                controller.onInvertSelected(event);
+            }
+        };
+        invertItem.addEventHandler(ActionEvent.ACTION, invertHandler);
+
+        EventHandler<ActionEvent> resetHandler = new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                controller.onResetToOriginal(event);
+            }
+        };
+        resetItem.addEventHandler(ActionEvent.ACTION, resetHandler);
     }
 
     public void setCurrentImage(Image img) {
-        currentImage = img;
-        imageView.setImage(currentImage);
+        imageView.setImage(img);
     }
 
     public void updateHistogram(int[][] histogramData) {
         histogramView.updateView(histogramData);
-    }
-
-    public void clearHistogram() {
-        histogramView.clear();
-    }
-
-    public Image getCurrentImage() {
-        return currentImage;
-    }
-
-    public MenuBar getMenuBar() {
-        return menuBar;
-    }
-
-    public Menu getFileMenu() {
-        return menuBar.getMenus().get(0);
-    }
-
-    public Menu getEditMenu() {
-        return menuBar.getMenus().get(1);
     }
 }

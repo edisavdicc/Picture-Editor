@@ -6,13 +6,13 @@ public class GrayScale implements IPixelProcessor{
 
     @Override
     public int[][] process(int[][] originalPixels) {
-        int height = originalPixels.length;
-        int width = originalPixels[0].length;
-        int[][] grayPixels = new int[height][width];
+        int width = originalPixels.length;
+        int height = originalPixels[0].length;
+        int[][] grayPixels = new int[width][height];
 
-        for (int y = 0; y < height; y++) {
-            for (int x = 0; x < width; x++) {
-                int pixel = originalPixels[y][x];
+        for (int x = 0; x < width; x++) {
+            for (int y = 0; y < height; y++) {
+                int pixel = originalPixels[x][y];
 
                 int alpha = PixelConverter.getAlpha(pixel);
                 int red = PixelConverter.getRed(pixel);
@@ -23,7 +23,7 @@ public class GrayScale implements IPixelProcessor{
                 int gray = (int) Math.round((red + green + blue) / 3.0);
 
                 // sätt alla färgkanaler till samma värde
-                grayPixels[y][x] = PixelConverter.toArgbPixel(alpha, gray, gray, gray);
+                grayPixels[x][y] = PixelConverter.toArgbPixel(alpha, gray, gray, gray);
             }
         }
         return grayPixels;
