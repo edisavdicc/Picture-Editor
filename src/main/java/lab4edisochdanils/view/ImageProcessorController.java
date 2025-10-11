@@ -1,9 +1,6 @@
 package lab4edisochdanils.view;
 
-import javafx.event.ActionEvent;
-import javafx.scene.image.Image;
 import lab4edisochdanils.model.ImageModel;
-import lab4edisochdanils.utils.ImagePixelsConverter;
 
 public class ImageProcessorController {
     private ImageProcessorView mainView;
@@ -14,41 +11,28 @@ public class ImageProcessorController {
         this.mainView = view;
     }
 
-    public void onGrayScaleSelected(ActionEvent event) {
+    public void onGrayScaleSelected() {
         model.grayScale();
-        updateViewFromModel();
+        mainView.updateFromModel();
     }
 
-    public void onLoadImage(ActionEvent event) {
+    public void onLoadImage() {
         // TODO: Implementera FileChooser för att ladda bilder
         System.out.println("Load image - not implemented yet");
     }
 
-    public void onSaveImage(ActionEvent event) {
+    public void onSaveImage() {
         // TODO: Implementera FileChooser för att spara bilder
         System.out.println("Save image - not implemented yet");
     }
 
-    public void onInvertSelected(ActionEvent event) {
+    public void onInvertSelected() {
         model.invertColors();
-        updateViewFromModel();
+        mainView.updateFromModel();
     }
 
-    public void onResetToOriginal(ActionEvent event) {
+    public void onResetToOriginal() {
         model.revertToOriginal();
-        updateViewFromModel();
-    }
-
-    /**
-     * Updates the view from the current model state.
-     * Converts pixel data to Image and updates histogram.
-     */
-    void updateViewFromModel() {
-        int[][] currentPixels = model.getCurrentPixels();
-        Image image = ImagePixelsConverter.pixelsToImage(currentPixels);
-        mainView.setCurrentImage(image);
-        
-        int[][] histogram = model.calculateHistogram();
-        mainView.updateHistogram(histogram);
+        mainView.updateFromModel();
     }
 }

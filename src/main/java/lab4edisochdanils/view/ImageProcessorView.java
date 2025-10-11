@@ -1,7 +1,5 @@
 package lab4edisochdanils.view;
 
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
@@ -14,28 +12,22 @@ import lab4edisochdanils.model.ImageModel;
 import lab4edisochdanils.utils.ImagePixelsConverter;
 
 public class ImageProcessorView extends VBox {
+    private final ImageModel model;
     private ImageView imageView;
-    private ScrollPane scrollPane;
     private HistogramView histogramView;
-    private MenuBar menuBar;
-    
-    // MenuItem referenser för att undvika bräcklig indexering
-    private MenuItem loadItem;
-    private MenuItem saveItem;
-    private MenuItem grayScaleItem;
-    private MenuItem invertItem;
-    private MenuItem resetItem;
+    private ImageProcessorController controller;
 
     public ImageProcessorView(Image img, ImageModel model) {
+        this.model = model;
+        
         this.imageView = new ImageView();
-        this.imageView.setImage(img);
         this.imageView.setPreserveRatio(true);
 
         // ScrollPane för bilden
-        this.scrollPane = new ScrollPane(imageView);
-        this.scrollPane.setFitToWidth(true);
-        this.scrollPane.setFitToHeight(true);
-        this.scrollPane.setPannable(true);
+        ScrollPane scrollPane = new ScrollPane(imageView);
+        scrollPane.setFitToWidth(true);
+        scrollPane.setFitToHeight(true);
+        scrollPane.setPannable(true);
 
         // Histogram
         this.histogramView = new HistogramView();
@@ -50,88 +42,60 @@ public class ImageProcessorView extends VBox {
         model.loadImage(initialPixels);
 
         // Skapa Controller här i View
-        ImageProcessorController controller = new ImageProcessorController(model, this);
+        this.controller = new ImageProcessorController(model, this);
 
-        // Skapa menubar
-        createMenuBar();
+        // Skapa menubar med event handlers
+        MenuBar menuBar = createMenuBar();
 
-        // Koppla event handlers
-        addEventHandlers(controller);
-
-        // Uppdatera histogram initialt
-        int[][] histogram = model.calculateHistogram();
-        histogramView.updateView(histogram);
+        // Uppdatera från model (visar bilden första gången)
+        updateFromModel();
 
         this.getChildren().addAll(menuBar, mainContent);
     }
 
-    private void createMenuBar() {
+    private MenuBar createMenuBar() {
+        // File menu
         Menu fileMenu = new Menu("File");
-        loadItem = new MenuItem("Load Image...");
-        saveItem = new MenuItem("Save Image...");
+        MenuItem loadItem = new MenuItem("Load Image...");
+        MenuItem saveItem = new MenuItem("Save Image...");
         fileMenu.getItems().addAll(loadItem, saveItem);
 
+        // Process menu
         Menu processMenu = new Menu("Process");
-        grayScaleItem = new MenuItem("Gray scale");
-        invertItem = new MenuItem("Invert colors");
-        resetItem = new MenuItem("Restore original");
+        MenuItem grayScaleItem = new MenuItem("Gray scale");
+        MenuItem invertItem = new MenuItem("Invert colors");
+        MenuItem resetItem = new MenuItem("Restore original");
         processMenu.getItems().addAll(grayScaleItem, invertItem, resetItem);
 
+        // Help menu
         Menu helpMenu = new Menu("Help");
 
-        menuBar = new MenuBar();
+        MenuBar menuBar = new MenuBar();
         menuBar.getMenus().addAll(fileMenu, processMenu, helpMenu);
+        
+        // Koppla event handlers här
+        loadItem.setOnAction(event -> controller.onLoadImage());
+        saveItem.setOnAction(event -> controller.onSaveImage());
+        grayScaleItem.setOnAction(event -> controller.onGrayScaleSelected());
+        invertItem.setOnAction(event -> controller.onInvertSelected());
+        resetItem.setOnAction(event -> controller.onResetToOriginal());
+        
+        return menuBar;
     }
 
-    private void addEventHandlers(ImageProcessorController controller) {
-        // File menu handlers
-        EventHandler<ActionEvent> loadHandler = new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                controller.onLoadImage(event);
-            }
-        };
-        loadItem.addEventHandler(ActionEvent.ACTION, loadHandler);
-
-        EventHandler<ActionEvent> saveHandler = new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                controller.onSaveImage(event);
-            }
-        };
-        saveItem.addEventHandler(ActionEvent.ACTION, saveHandler);
-
-        // Process menu handlers
-        EventHandler<ActionEvent> grayScaleHandler = new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                controller.onGrayScaleSelected(event);
-            }
-        };
-        grayScaleItem.addEventHandler(ActionEvent.ACTION, grayScaleHandler);
-
-        EventHandler<ActionEvent> invertHandler = new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                controller.onInvertSelected(event);
-            }
-        };
-        invertItem.addEventHandler(ActionEvent.ACTION, invertHandler);
-
-        EventHandler<ActionEvent> resetHandler = new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                controller.onResetToOriginal(event);
-            }
-        };
-        resetItem.addEventHandler(ActionEvent.ACTION, resetHandler);
-    }
-
-    public void setCurrentImage(Image img) {
-        imageView.setImage(img);
-    }
-
-    public void updateHistogram(int[][] histogramData) {
-        histogramView.updateView(histogramData);
+    /**
+     * Updates the view from the current model state.
+     * Retrieves pixel data from model, converts to Image and updates display.
+     * Also updates histogram.
+     */
+    public void updateFromModel() {
+        // Hämta direkt från model
+        int[][] currentPixels = model.getCurrentPixels();
+        Image image = ImagePixelsConverter.pixelsToImage(currentPixels);
+        imageView.setImage(image);
+        
+        // Uppdatera histogram
+        int[][] histogram = model.calculateHistogram();
+        histogramView.updateView(histogram);
     }
 }
