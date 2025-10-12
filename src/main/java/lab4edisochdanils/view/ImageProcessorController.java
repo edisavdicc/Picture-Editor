@@ -1,18 +1,29 @@
 package lab4edisochdanils.view;
 
-import lab4edisochdanils.model.ImageModel;
+import lab4edisochdanils.model.ImageProcessorModel;
 
 public class ImageProcessorController {
     private ImageProcessorView mainView;
-    private ImageModel model;
+    private ImageProcessorModel model;
 
-    public ImageProcessorController(ImageModel model, ImageProcessorView view) {
+    public ImageProcessorController(ImageProcessorModel model, ImageProcessorView view) {
         this.model = model;
         this.mainView = view;
     }
 
     public void onGrayScaleSelected() {
         model.grayScale();
+        mainView.updateFromModel();
+    }
+    
+    public void onBlurSelected(){
+        model.blur();
+        mainView.updateFromModel();
+        
+    }
+
+    public void onSharpenSelected() {
+        model.sharpen();
         mainView.updateFromModel();
     }
 

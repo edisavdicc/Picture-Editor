@@ -8,16 +8,16 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import lab4edisochdanils.model.ImageModel;
+import lab4edisochdanils.model.ImageProcessorModel;
 import lab4edisochdanils.utils.ImagePixelsConverter;
 
 public class ImageProcessorView extends VBox {
-    private final ImageModel model;
+    private final ImageProcessorModel model;
     private ImageView imageView;
     private HistogramView histogramView;
     private ImageProcessorController controller;
 
-    public ImageProcessorView(Image img, ImageModel model) {
+    public ImageProcessorView(Image img, ImageProcessorModel model) {
         this.model = model;
         
         this.imageView = new ImageView();
@@ -63,9 +63,12 @@ public class ImageProcessorView extends VBox {
         // Process menu
         Menu processMenu = new Menu("Process");
         MenuItem grayScaleItem = new MenuItem("Gray scale");
+        MenuItem blurItem = new MenuItem("Blur");
+        MenuItem sharpenItem = new MenuItem("Sharpen");
         MenuItem invertItem = new MenuItem("Invert colors");
         MenuItem resetItem = new MenuItem("Restore original");
-        processMenu.getItems().addAll(grayScaleItem, invertItem, resetItem);
+        processMenu.getItems().addAll(grayScaleItem, blurItem, sharpenItem, invertItem, resetItem);
+
 
         // Help menu
         Menu helpMenu = new Menu("Help");
@@ -77,6 +80,8 @@ public class ImageProcessorView extends VBox {
         loadItem.setOnAction(event -> controller.onLoadImage());
         saveItem.setOnAction(event -> controller.onSaveImage());
         grayScaleItem.setOnAction(event -> controller.onGrayScaleSelected());
+        blurItem.setOnAction(event->controller.onBlurSelected());
+        sharpenItem.setOnAction(event -> controller.onSharpenSelected()); 
         invertItem.setOnAction(event -> controller.onInvertSelected());
         resetItem.setOnAction(event -> controller.onResetToOriginal());
         

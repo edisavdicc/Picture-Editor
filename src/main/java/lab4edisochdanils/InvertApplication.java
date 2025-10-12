@@ -5,7 +5,7 @@ import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import lab4edisochdanils.model.ImageModel;
+import lab4edisochdanils.model.ImageProcessorModel;
 import lab4edisochdanils.view.ImageProcessorView;
 
 import java.io.IOException;
@@ -23,9 +23,9 @@ public class InvertApplication extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
-        Image originalImage = new Image(this.getClass().getResource("images/devil.png").toString());
+        Image originalImage = new Image(this.getClass().getResource("images/rastered_eye.jpg").toString());
 
-        ImageModel model = new ImageModel();
+        ImageProcessorModel model = new ImageProcessorModel();
         ImageProcessorView view = new ImageProcessorView(originalImage, model);
 
         Scene scene = new Scene(view, 800, 600);

@@ -5,17 +5,21 @@ package lab4edisochdanils.model;
  * Defines all methods that the controller needs access to.
  * Contains no JavaFX dependencies - only pure data processing.
  */
-public class ImageModel {
+public class ImageProcessorModel {
     private int[][] originalPixels;
     private int[][] currentPixels;
     private Histogram histoGram;
     private InvertColors invertColors;
     private GrayScale grayScale;
+    private Blur blur;
+    private Sharpening sharpening;
     
-    public ImageModel() {
+    public ImageProcessorModel() {
         this.histoGram = new Histogram();
         this.invertColors = new InvertColors();
         this.grayScale = new GrayScale();
+        this.blur = new Blur();
+        this.sharpening = new Sharpening();
     }
     
     /**
@@ -44,12 +48,24 @@ public class ImageModel {
         }
     }
 
+    public void sharpen() {
+        if (currentPixels != null) {
+            this.currentPixels = sharpening.process(currentPixels);
+        }
+    }
+
     /**
      * Apply grayscale operation
      */
     public void grayScale() {
         if (currentPixels != null) {
             this.currentPixels = grayScale.process(currentPixels);
+        }
+    }
+    
+    public void blur(){
+        if(currentPixels != null){
+            this.currentPixels = blur.process(currentPixels);
         }
     }
     
