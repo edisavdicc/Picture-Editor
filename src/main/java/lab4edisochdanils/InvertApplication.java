@@ -23,7 +23,7 @@ public class InvertApplication extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
-        Image originalImage = new Image(this.getClass().getResource("images/rastered_eye.jpg").toString());
+        Image originalImage = new Image(this.getClass().getResource("images/space.jpg").toString());
 
         ImageProcessorModel model = new ImageProcessorModel();
         ImageProcessorView view = new ImageProcessorView(originalImage, model);

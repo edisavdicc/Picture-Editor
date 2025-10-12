@@ -83,7 +83,7 @@ public class Sharpening implements IPixelProcessor {
         if (sharpRed > 255) sharpRed = 255;
 
         if (sharpGreen < 0) sharpGreen = 0;
-        if (sharpGreen > 255) sharpGreen = 255;
+        if (sharpGreen > 255) sharpGreen = 255; 
 
         if (sharpBlue < 0) sharpBlue = 0;
         if (sharpBlue > 255) sharpBlue = 255;

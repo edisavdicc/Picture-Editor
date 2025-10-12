@@ -6,31 +6,36 @@ package lab4edisochdanils.model;
  * Contains no JavaFX dependencies - only pure data processing.
  */
 public class ImageProcessorModel {
-    private int[][] originalPixels;
-    private int[][] currentPixels;
+    private int[][] originalPixels;        // Ursprunglig bild (för Restore original)
+    private int[][] processedPixels;       // Bild efter blur/gray/etc (innan Window/Level)
+    private int[][] currentPixels;         // Slutlig bild som visas (efter Window/Level)
+
     private Histogram histoGram;
     private InvertColors invertColors;
     private GrayScale grayScale;
     private Blur blur;
     private Sharpening sharpening;
-    
+    private WindowLevel windowLevel;
+
     public ImageProcessorModel() {
         this.histoGram = new Histogram();
         this.invertColors = new InvertColors();
         this.grayScale = new GrayScale();
         this.blur = new Blur();
         this.sharpening = new Sharpening();
+        this.windowLevel = new WindowLevel();
     }
-    
+
     /**
      * Load an image into the model
      * @param pixels the pixel matrix representing the image
      */
     public void loadImage(int[][] pixels) {
         this.originalPixels = copyPixels(pixels);
+        this.processedPixels = copyPixels(pixels);
         this.currentPixels = copyPixels(pixels);
     }
-    
+
     /**
      * Get the current pixel matrix
      * @return current pixel matrix
@@ -38,19 +43,14 @@ public class ImageProcessorModel {
     public int[][] getCurrentPixels() {
         return copyPixels(currentPixels);
     }
-    
+
     /**
      * Apply invert colors operation
      */
     public void invertColors() {
-        if (currentPixels != null) {
-            this.currentPixels = invertColors.process(currentPixels);
-        }
-    }
-
-    public void sharpen() {
-        if (currentPixels != null) {
-            this.currentPixels = sharpening.process(currentPixels);
+        if (processedPixels != null) {
+            this.processedPixels = invertColors.process(processedPixels);
+            this.currentPixels = copyPixels(processedPixels);
         }
     }
 
@@ -58,26 +58,56 @@ public class ImageProcessorModel {
      * Apply grayscale operation
      */
     public void grayScale() {
-        if (currentPixels != null) {
-            this.currentPixels = grayScale.process(currentPixels);
+        if (processedPixels != null) {
+            this.processedPixels = grayScale.process(processedPixels);
+            this.currentPixels = copyPixels(processedPixels);
         }
     }
-    
-    public void blur(){
-        if(currentPixels != null){
-            this.currentPixels = blur.process(currentPixels);
+
+    /**
+     * Apply blur operation
+     */
+    public void blur() {
+        if (processedPixels != null) {
+            this.processedPixels = blur.process(processedPixels);
+            this.currentPixels = copyPixels(processedPixels);
         }
     }
-    
+
+    /**
+     * Apply sharpening operation
+     */
+    public void sharpen() {
+        if (processedPixels != null) {
+            this.processedPixels = sharpening.process(processedPixels);
+            this.currentPixels = copyPixels(processedPixels);
+        }
+    }
+
+    /**
+     * Apply window/level contrast adjustment
+     * @param level nedre gräns för det aktiva intervallet
+     * @param window storlek på intervallet
+     */
+    public void applyWindowLevel(int level, int window) {
+        if (processedPixels != null) {
+            windowLevel.setLevel(level);
+            windowLevel.setWindow(window);
+            // Applicera ALLTID på processedPixels, inte på redan W/L-justerade pixlar
+            this.currentPixels = windowLevel.process(processedPixels);
+        }
+    }
+
     /**
      * Revert to original image
      */
     public void revertToOriginal() {
         if (originalPixels != null) {
+            this.processedPixels = copyPixels(originalPixels);
             this.currentPixels = copyPixels(originalPixels);
         }
     }
-    
+
     /**
      * Calculate histogram for current pixels
      * @return histogram data as int[256][3] matrix
@@ -88,23 +118,23 @@ public class ImageProcessorModel {
         }
         return new int[256][3]; // Empty histogram
     }
-    
+
     /**
      * Helper method to create a deep copy of pixel matrix
      */
     private int[][] copyPixels(int[][] pixels) {
         if (pixels == null) return null;
-        
+
         int width = pixels.length;
         int height = pixels[0].length;
         int[][] copy = new int[width][height];
-        
+
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
                 copy[x][y] = pixels[x][y];
             }
         }
-        
+
         return copy;
     }
 }
