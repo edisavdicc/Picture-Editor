@@ -3,6 +3,7 @@ package lab4edisochdanils.view;
 import javafx.scene.image.Image;
 import lab4edisochdanils.model.ImageProcessorModel;
 import lab4edisochdanils.utils.ImagePixelsConverter;
+import lab4edisochdanils.utils.ImageProcessingException;
 
 public class ImageProcessorController {
     private ImageProcessorView mainView;
@@ -45,15 +46,23 @@ public class ImageProcessorController {
         fileIO.openImageFile();
         Image loadedImage = fileIO.getImage();
         if (loadedImage != null) {
-            model.loadImage(ImagePixelsConverter.imageToPixels(loadedImage));
-            mainView.updateFromModel();
+            try {
+                model.loadImage(ImagePixelsConverter.imageToPixels(loadedImage));
+                mainView.updateFromModel();
+            } catch (ImageProcessingException e) {
+                ImageProcessingException.showError("Fel", "Kunde inte bearbeta bild");
+            }
         }
     }
 
     public void onSaveImage() {
-        Image currentImage = ImagePixelsConverter.pixelsToImage(model.getCurrentPixels());
-        fileIO.setImage(currentImage);
-        fileIO.saveImageToFile();
+        try {
+            Image currentImage = ImagePixelsConverter.pixelsToImage(model.getCurrentPixels());
+            fileIO.setImage(currentImage);
+            fileIO.saveImageToFile();
+        } catch (ImageProcessingException e) {
+            ImageProcessingException.showError("Fel", "Kunde inte spara bild");
+        }
     }
 
     public void onInvertSelected() {

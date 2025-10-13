@@ -4,6 +4,7 @@ import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.Image;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import lab4edisochdanils.utils.ImageProcessingException;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -27,22 +28,31 @@ public class FileIO {
 
     protected void openImageFile() {
         File imageFile = fileChooser.showOpenDialog(primaryStage);
-        if (imageFile == null) {
-            return;
+        if (imageFile == null) return;
+        
+        try {
+            image = new Image(imageFile.toURI().toString());
+            if (image.isError()) {
+                ImageProcessingException.showError("Fel", "Ogiltig bildfil");
+                image = null;
+            }
+        } catch (Exception e) {
+            ImageProcessingException.showError("Fel", "Kunde inte ladda bild");
+            image = null;
         }
-        image = new Image(imageFile.toURI().toString());
-        // uppdatera UI/modell här vid behov
     }
 
     protected void saveImageToFile() {
         if (image == null) {
+            ImageProcessingException.showError("Fel", "Ingen bild att spara");
             return;
         }
+        
         try {
             BufferedImage bufferedImage = SwingFXUtils.fromFXImage(image, null);
             ImageIO.write(bufferedImage, "png", new File("copy.png"));
         } catch (Exception e) {
-            e.printStackTrace();
+            ImageProcessingException.showError("Fel", "Kunde inte spara bild");
         }
     }
 

@@ -10,6 +10,7 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import lab4edisochdanils.model.ImageProcessorModel;
 import lab4edisochdanils.utils.ImagePixelsConverter;
+import lab4edisochdanils.utils.ImageProcessingException;
 
 public class ImageProcessorView extends VBox {
     private final ImageProcessorModel model;
@@ -24,7 +25,11 @@ public class ImageProcessorView extends VBox {
     public ImageProcessorView(Image img, ImageProcessorModel model, FileIO fileIO) {
         this.model = model;
         // Initiera modellen med bilden
-        model.loadImage(ImagePixelsConverter.imageToPixels(img));
+        try {
+            model.loadImage(ImagePixelsConverter.imageToPixels(img));
+        } catch (ImageProcessingException e) {
+            ImageProcessingException.showError("Fel", "Kunde inte ladda startbild");
+        }
         // Skapa Controller
         this.controller = new ImageProcessorController(model, this, fileIO);
         // ImageView med auto-skalning
@@ -134,7 +139,11 @@ public class ImageProcessorView extends VBox {
     }
 
     public void updateFromModel() {
-        imageView.setImage(ImagePixelsConverter.pixelsToImage(model.getCurrentPixels()));
-        histogramView.updateView(model.calculateHistogram());
+        try {
+            imageView.setImage(ImagePixelsConverter.pixelsToImage(model.getCurrentPixels()));
+            histogramView.updateView(model.calculateHistogram());
+        } catch (ImageProcessingException e) {
+            ImageProcessingException.showError("Fel", "Kunde inte visa bild");
+        }
     }
 }

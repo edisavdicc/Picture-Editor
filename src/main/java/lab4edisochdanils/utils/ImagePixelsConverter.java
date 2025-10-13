@@ -10,12 +10,24 @@ import javafx.scene.image.WritableImage;
  */
 public class ImagePixelsConverter {
 
-    public static int[][] imageToPixels(Image image) {
+    public static int[][] imageToPixels(Image image) throws ImageProcessingException {
+        if (image == null) {
+            throw new ImageProcessingException("Bilden är null");
+        }
+        
         int width = (int) image.getWidth();
         int height = (int) image.getHeight();
+        
+        if (width <= 0 || height <= 0) {
+            throw new ImageProcessingException("Ogiltiga dimensioner");
+        }
 
         int[][] pixelMatrix = new int[width][height];
         PixelReader pixelReader = image.getPixelReader();
+        
+        if (pixelReader == null) {
+            throw new ImageProcessingException("Kunde inte läsa pixeldata");
+        }
 
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
@@ -26,7 +38,14 @@ public class ImagePixelsConverter {
         return pixelMatrix;
     }
 
-    public static Image pixelsToImage(int[][] pixelMatrix) {
+    public static Image pixelsToImage(int[][] pixelMatrix) throws ImageProcessingException {
+        if (pixelMatrix == null || pixelMatrix.length == 0) {
+            throw new ImageProcessingException("Ogiltig pixelmatris");
+        }
+        
+        if (pixelMatrix[0] == null || pixelMatrix[0].length == 0) {
+            throw new ImageProcessingException("Ogiltiga dimensioner");
+        }
 
         int width = pixelMatrix.length;
         int height = pixelMatrix[0].length;
