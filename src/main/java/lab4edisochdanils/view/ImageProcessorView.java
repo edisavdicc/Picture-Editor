@@ -90,9 +90,19 @@ public class ImageProcessorView extends VBox {
     }
 
     private HBox createSliders() {
-        // Skapa sliders med etiketter och värdevisning
-        windowSlider = new Slider(1, 255, 35);
+        // Skala 0..255 på båda sliders (window klampas ändå till ≥1 i modellen)
+        windowSlider = new Slider(0, 255, 35);
         levelSlider = new Slider(0, 255, 75);
+
+        // Visa skala 0..255 på reglagen
+        for (Slider s : new Slider[]{windowSlider, levelSlider}) {
+            s.setShowTickLabels(true);
+            s.setShowTickMarks(true);
+            s.setMajorTickUnit(50);
+            s.setMinorTickCount(4); // ger 10-steg mellan 50-markeringar
+            s.setBlockIncrement(1);
+            s.setPrefWidth(250);
+        }
 
         // Uppdatera bilden när någon slider ändras (delad handler)
         windowSlider.valueProperty().addListener((obs, o, n) ->
@@ -102,16 +112,12 @@ public class ImageProcessorView extends VBox {
             controller.onWindowLevelChanged((int) levelSlider.getValue(), (int) windowSlider.getValue())
         );
 
-        // Titlar och numeriska etiketter under respektive slider
+        // Titlar ovanför respektive slider (utan numeriska etiketter under)
         Label windowTitle = new Label("Window");
-        Label windowValue = new Label();
-        windowValue.textProperty().bind(windowSlider.valueProperty().asString("%.0f"));
-        VBox windowBox = new VBox(5, windowTitle, windowSlider, windowValue);
+        VBox windowBox = new VBox(5, windowTitle, windowSlider);
 
         Label levelTitle = new Label("Level");
-        Label levelValue = new Label();
-        levelValue.textProperty().bind(levelSlider.valueProperty().asString("%.0f"));
-        VBox levelBox = new VBox(5, levelTitle, levelSlider, levelValue);
+        VBox levelBox = new VBox(5, levelTitle, levelSlider);
 
         // Placera grupperna horisontellt
         HBox sliderContainer = new HBox(20);
