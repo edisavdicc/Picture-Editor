@@ -10,7 +10,7 @@ import lab4edisochdanils.view.ImageProcessorView;
 
 import java.io.IOException;
 
-public class InvertApplication extends Application {
+public class ImageProcessorApplication extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
