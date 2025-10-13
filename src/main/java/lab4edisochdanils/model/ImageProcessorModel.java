@@ -91,6 +91,12 @@ public class ImageProcessorModel {
      */
     public void applyWindowLevel(int level, int window) {
         if (processedPixels != null) {
+            // Bypass: om window är 0 eller mindre, visa bilden utan W/L-justering
+            if (window <= 0) {
+                this.currentPixels = copyPixels(processedPixels);
+                return;
+            }
+
             windowLevel.setLevel(level);
             windowLevel.setWindow(window);
             // Applicera ALLTID på processedPixels, inte på redan W/L-justerade pixlar

@@ -90,9 +90,9 @@ public class ImageProcessorView extends VBox {
     }
 
     private HBox createSliders() {
-        // Skala 0..255 på båda sliders (window klampas ändå till ≥1 i modellen)
-        windowSlider = new Slider(0, 255, 35);
-        levelSlider = new Slider(0, 255, 75);
+        // Skala 0..255 på båda sliders, startvärden 0/0 (bypass initialt)
+        windowSlider = new Slider(0, 255, 0);
+        levelSlider = new Slider(0, 255, 0);
 
         // Visa skala 0..255 på reglagen
         for (Slider s : new Slider[]{windowSlider, levelSlider}) {
