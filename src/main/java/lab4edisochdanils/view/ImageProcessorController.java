@@ -1,25 +1,29 @@
 package lab4edisochdanils.view;
 
+import javafx.scene.image.Image;
 import lab4edisochdanils.model.ImageProcessorModel;
+import lab4edisochdanils.utils.ImagePixelsConverter;
 
 public class ImageProcessorController {
     private ImageProcessorView mainView;
     private ImageProcessorModel model;
+    private FileIO fileIO;
 
-    public ImageProcessorController(ImageProcessorModel model, ImageProcessorView view) {
+    public ImageProcessorController(ImageProcessorModel model, ImageProcessorView view, FileIO fileIO) {
         this.model = model;
         this.mainView = view;
+        this.fileIO = fileIO;
     }
 
     public void onGrayScaleSelected() {
         model.grayScale();
         mainView.updateFromModel();
     }
-    
+
     public void onBlurSelected(){
         model.blur();
         mainView.updateFromModel();
-        
+
     }
 
     public void onSharpenSelected() {
@@ -38,13 +42,18 @@ public class ImageProcessorController {
     }
 
     public void onLoadImage() {
-        // TODO: Implementera FileChooser för att ladda bilder
-        System.out.println("Load image - not implemented yet");
+        fileIO.openImageFile();
+        Image loadedImage = fileIO.getImage();
+        if (loadedImage != null) {
+            model.loadImage(ImagePixelsConverter.imageToPixels(loadedImage));
+            mainView.updateFromModel();
+        }
     }
 
     public void onSaveImage() {
-        // TODO: Implementera FileChooser för att spara bilder
-        System.out.println("Save image - not implemented yet");
+        Image currentImage = ImagePixelsConverter.pixelsToImage(model.getCurrentPixels());
+        fileIO.setImage(currentImage);
+        fileIO.saveImageToFile();
     }
 
     public void onInvertSelected() {

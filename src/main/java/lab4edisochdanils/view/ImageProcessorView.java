@@ -21,12 +21,12 @@ public class ImageProcessorView extends VBox {
     private Slider windowSlider;
     private Slider levelSlider;
 
-    public ImageProcessorView(Image img, ImageProcessorModel model) {
+    public ImageProcessorView(Image img, ImageProcessorModel model, FileIO fileIO) {
         this.model = model;
         // Initiera modellen med bilden
         model.loadImage(ImagePixelsConverter.imageToPixels(img));
         // Skapa Controller
-        this.controller = new ImageProcessorController(model, this);
+        this.controller = new ImageProcessorController(model, this, fileIO);
         // ImageView med auto-skalning
         imageView = new ImageView();
         imageView.setPreserveRatio(false);
