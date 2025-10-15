@@ -4,24 +4,6 @@ import lab4edisochdanils.utils.PixelConverter;
 
 /**
  * Window/Level kontrast-justering för medicinska gråskalebilder.
- *
- * Metoden förbättrar synligheten av strukturer inom ett specifikt intensitetsintervall
- * genom att använda en linjär mappning enligt kurvan:
- *
- *   Output intensity (255) ┐     ┌────────
- *                          │    /
- *                          │   /
- *                          │  /
- *                          │ /
- *                       (0)└/───────────── Input intensity (255)
- *                         level  window
- *
- * - Värden < level → 0 (svart)
- * - Värden inom [level, level+window] → linjär mappning med lutning k = 255/window
- * - Värden > level+window → 255 (vit)
- *
- * Detta förstärker kontrasten för det valda intervallet, vilket hjälper läkare
- * att bättre se specifika strukturer (t.ex. ben, mjukvävnad, etc.) i medicinska bilder.
  */
 public class WindowLevel implements IPixelProcessor {
 
@@ -30,11 +12,10 @@ public class WindowLevel implements IPixelProcessor {
 
     /**
      * Skapar en WindowLevel-processor med standardvärden.
-     * Level=75, Window=35 ger bra resultat för hjärnscanningar.
      */
     public WindowLevel() {
-        this.level = 75;
-        this.window = 35;
+        this.level = 0;
+        this.window = 0;
     }
 
     /**
@@ -135,12 +116,6 @@ public class WindowLevel implements IPixelProcessor {
 
     /**
      * Tillämpar window/level-mappningen enligt den linjära kurvan.
-     *
-     * Mappning:
-     * - input < level              → output = 0
-     * - level ≤ input ≤ level+window → output = k × (input - level), där k = 255/window
-     * - input > level+window       → output = 255
-     *
      * @param intensity det ursprungliga intensitetsvärdet (0-255)
      * @return det mappade intensitetsvärdet (0-255)
      */
@@ -150,14 +125,11 @@ public class WindowLevel implements IPixelProcessor {
             return 0;
         }
 
-        // Efter fönstrets slut -> sätt till 255 (vit)
         int upperBound = level + window;
         if (intensity > upperBound) {
             return 255;
         }
-
-        // Inom fönstret -> linjär mappning med lutning k = 255/window
-        // output = k × (input - level) = (255/window) × (intensity - level)
+        
         double k = 255.0 / window;  // Lutningen på kurvan
         double output = k * (intensity - level);
 

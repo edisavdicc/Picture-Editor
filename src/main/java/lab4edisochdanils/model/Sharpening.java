@@ -4,12 +4,7 @@ import lab4edisochdanils.utils.PixelConverter;
 
 /**
  * Sharpening-filter som gör kanter i bilden skarpare.
- *
- * Algoritm:
- * 1. Skapa en suddig version av bilden (blur)
- * 2. Beräkna skillnadsbilden (original - blurred)
- * 3. Addera skillnadsbilden till originalet (original + difference)
- * 4. Resultat: sharpened = original + (original - blurred) = 2*original - blurred
+ 
  */
 public class Sharpening implements IPixelProcessor {
 
