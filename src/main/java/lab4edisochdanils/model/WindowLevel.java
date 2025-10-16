@@ -9,10 +9,7 @@ public class WindowLevel implements IPixelProcessor {
 
     private int level;
     private int window;
-
-    /**
-     * Default constructor.
-     */
+    
     public WindowLevel() {
         this.level = 0;
         this.window = 0;

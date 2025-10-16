@@ -3,39 +3,28 @@ package lab4edisochdanils.model;
 import lab4edisochdanils.utils.PixelConverter;
 
 /**
- * Blur filter that makes an image blurrier.
- * Uses a 3x3 matrix with weighted averages
- * to blend each pixel with its 8 nearest neighbors.
- * 
- * @author Edis and Danils
- * @version 1.0
+ * Blur filter using 3x3 matrix with weighted averages
  */
 public class Blur implements IPixelProcessor {
 
     /**
-     * Viktmatris för blur-effekten.
-     * Varje pixel påverkas av sina grannar enligt dessa vikter:
-     * - Centrum (pixeln själv): vikt 4
-     * - Direkt intill (upp/ner/vänster/höger): vikt 2
-     * - Diagonalt (hörnen): vikt 1
+     * Weight matrix for blur effect.
      */
-    private static final int[][] weighedMatrix = {
+    private static final int[][] weightMatrix = {
             {1, 2, 1},
             {2, 4, 2},
             {1, 2, 1}
     };
 
     /**
-     * Summan av alla vikter i matrisen (1+2+1+2+4+2+1+2+1 = 16).
-     * Används som divisor för att beräkna medelvärdet.
+     * Sum of all weights (divisor for averaging).
      */
-    private static final double weighedAverage = 16.0;
+    private static final double weightSum = 16.0;
 
     /**
-     * Applicerar blur-effekten på en pixelmatris.
-     *
-     * @param originalPixels den ursprungliga pixelmatrisen
-     * @return en ny pixelmatris med blur-effekt applicerad
+     * Applies blur effect to image.
+     * @param originalPixels original pixel matrix
+     * @return blurred pixel matrix
      */
     @Override
     public int[][] process(int[][] originalPixels) {
@@ -53,34 +42,30 @@ public class Blur implements IPixelProcessor {
     }
 
     /**
-     * Beräknar det suddiga värdet för en enskild pixel genom att
-     * vikta och blanda den med sina 8 närmaste grannar.
-     *
-     * @param pixels den ursprungliga pixelmatrisen
-     * @param x pixelns x-koordinat
-     * @param y pixelns y-koordinat
-     * @param width bildens bredd
-     * @param height bildens höjd
-     * @return den nya, suddiga pixeln som ett ARGB-värde
+     * Blurs a single pixel using weighted average of neighbors.
+     * @param pixels pixel matrix
+     * @param x pixel x-coordinate
+     * @param y pixel y-coordinate
+     * @param width image width
+     * @param height image height
+     * @return blurred pixel (ARGB)
      */
     private int blurPixel(int[][] pixels, int x, int y, int width, int height) {
         double redSum = 0, greenSum = 0, blueSum = 0;
 
-        // Gå igenom ett 3x3 område runt pixeln
-        for (int dx = -1; dx <= 1; dx++) {        // dx: förflyttning i x-led (-1, 0, 1)
-            for (int dy = -1; dy <= 1; dy++) {    // dy: förflyttning i y-led (-1, 0, 1)
+        // Loop through 3x3 area around pixel
+        for (int dx = -1; dx <= 1; dx++) {
+            for (int dy = -1; dy <= 1; dy++) {
+                // Calculate neighbor's position
+                int nx = x + dx;// Neighbor's x-coordinate
+                int ny = y + dy;// Neighbor's y-coordinate
 
-                // Beräkna grannpixelns position
-                int nx = x + dx;  // neighbor x
-                int ny = y + dy;  // neighbor y
-
-                // Kontrollera att grannpixeln är inom bildgränserna
+                // Check if neighbor is within image bounds
                 if (nx >= 0 && nx < width && ny >= 0 && ny < height) {
-                    // Hämta vikten från matrisen (konvertera dx/dy till matrisindex)
-                    int weight = weighedMatrix[dx + 1][dy + 1];
+                    int weight = weightMatrix[dx + 1][dy + 1];  // Convert offset to matrix index
                     int pixel = pixels[nx][ny];
 
-                    // Addera viktade färgvärden till summorna
+                    // Add weighted color values
                     redSum += PixelConverter.getRed(pixel) * weight;
                     greenSum += PixelConverter.getGreen(pixel) * weight;
                     blueSum += PixelConverter.getBlue(pixel) * weight;
@@ -88,16 +73,14 @@ public class Blur implements IPixelProcessor {
             }
         }
 
-        // Beräkna medelvärden genom att dividera med summan av vikterna
-        // Math.round ger korrekt avrundning till närmaste heltal
-        int red = (int) Math.round(redSum / weighedAverage);
-        int green = (int) Math.round(greenSum / weighedAverage);
-        int blue = (int) Math.round(blueSum / weighedAverage);
+        // Calculate weighted averages
+        int red = (int) Math.round(redSum / weightSum);
+        int green = (int) Math.round(greenSum / weightSum);
+        int blue = (int) Math.round(blueSum / weightSum);
 
-        // Behåll originalbildens alpha-kanal (transparens)
+        // alpha channel
         int alpha = PixelConverter.getAlpha(pixels[x][y]);
 
-        // Skapa och returnera den nya pixeln
         return PixelConverter.toArgbPixel(alpha, red, green, blue);
     }
 }

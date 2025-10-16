@@ -6,17 +6,13 @@ import lab4edisochdanils.utils.PixelConverter;
  * Grayscale conversion for images.
  * Converts a color image to grayscale by calculating the average of red, green and blue
  * for each pixel and setting all color channels to this average.
- * 
- * @author Edis and Danils
- * @version 1.0
  */
 public class GrayScale implements IPixelProcessor{
 
     /**
      * Converts the image to grayscale.
-     * Calculates the average of RGB values for each pixel using floating-point arithmetic
-     * for correct rounding, and sets all color channels to the same value.
-     * 
+     * Calculates the average of RGB values for each pixel 
+     * and sets all color channels to the same value.
      * @param originalPixels the original pixel matrix
      * @return a new pixel matrix where the image is converted to grayscale
      */

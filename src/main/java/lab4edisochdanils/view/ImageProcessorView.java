@@ -32,7 +32,7 @@ public class ImageProcessorView extends VBox {
         try {
             model.loadImage(ImagePixelsConverter.imageToPixels(img));
         } catch (ImageProcessingException e) {
-            ImageProcessingException.showError("Error", "Could not load image");
+            AlertHelper.showError("Error", "Could not load image");
         }
         // Create controller
         this.controller = new ImageProcessorController(model, this, fileIO);
@@ -167,7 +167,7 @@ public class ImageProcessorView extends VBox {
             imageView.setImage(ImagePixelsConverter.pixelsToImage(model.getCurrentPixels()));
             histogramView.updateView(model.calculateHistogram());
         } catch (ImageProcessingException e) {
-            ImageProcessingException.showError("Error", "Could not display image");
+            AlertHelper.showError("Error", "Could not display image");
         }
     }
 }

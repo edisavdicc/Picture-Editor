@@ -5,7 +5,7 @@ import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import lab4edisochdanils.model.ImageProcessorModel;
-import lab4edisochdanils.utils.ImageProcessingException;
+import lab4edisochdanils.view.AlertHelper;
 import lab4edisochdanils.view.FileIO;
 import lab4edisochdanils.view.ImageProcessorView;
 
@@ -19,7 +19,7 @@ public class ImageProcessorApplication extends Application {
             Image originalImage = new Image(this.getClass().getResource("images/skull_ct.png").toString());
             
             if (originalImage.isError()) {
-                ImageProcessingException.showError("Fel", "Kunde inte starta programmet");
+                AlertHelper.showError("Error", "Could not start application");
                 return;
             }
 
@@ -34,7 +34,7 @@ public class ImageProcessorApplication extends Application {
             stage.setScene(scene);
             stage.show();
         } catch (Exception e) {
-            ImageProcessingException.showError("Fel", "Kunde inte starta programmet");
+            AlertHelper.showError("Error", "Could not start application");
         }
     }
 

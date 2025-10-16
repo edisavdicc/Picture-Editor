@@ -50,7 +50,7 @@ public class ImageProcessorController {
                 model.loadImage(ImagePixelsConverter.imageToPixels(loadedImage));
                 mainView.updateFromModel();
             } catch (ImageProcessingException e) {
-                ImageProcessingException.showError("Error", "Could not process image");
+                AlertHelper.showError("Error", "Could not process image");
             }
         }
     }
@@ -64,7 +64,7 @@ public class ImageProcessorController {
             fileIO.setImage(currentImage);
             fileIO.saveImageToFile();
         } catch (ImageProcessingException e) {
-            ImageProcessingException.showError("Error", "Could not save image");
+            AlertHelper.showError("Error", "Could not save image");
         }
     }
 
