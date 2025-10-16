@@ -1,0 +1,1 @@
+packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"m":"se.kth.anderslm.invertcolors","l":"lab4edisochdanils"},{"m":"se.kth.anderslm.invertcolors","l":"lab4edisochdanils.model"},{"m":"se.kth.anderslm.invertcolors","l":"lab4edisochdanils.utils"},{"m":"se.kth.anderslm.invertcolors","l":"lab4edisochdanils.view"}];updateSearchResults();

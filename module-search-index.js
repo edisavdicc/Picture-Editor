@@ -1,0 +1,1 @@
+moduleSearchIndex = [{"l":"se.kth.anderslm.invertcolors"}];updateSearchResults();
