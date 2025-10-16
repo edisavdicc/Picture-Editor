@@ -1,9 +1,8 @@
 package lab4edisochdanils.model;
 
 /**
- * Facade for the image processing model.
+ * Main class (facade) for the image processing model.
  * Defines all methods that the controller needs access to.
- * Contains no JavaFX dependencies - only pure data processing.
  */
 public class ImageProcessorModel {
     private int[][] originalPixels;        // Ursprunglig bild (för Restore original)
@@ -27,7 +26,9 @@ public class ImageProcessorModel {
     }
 
     /**
-     * Load an image into the model
+     * Loads a new image into the model.
+     * Creates three copies of the image: original, processed and current.
+     * 
      * @param pixels the pixel matrix representing the image
      */
     public void loadImage(int[][] pixels) {
@@ -37,61 +38,21 @@ public class ImageProcessorModel {
     }
 
     /**
-     * Get the current pixel matrix
-     * @return current pixel matrix
+     * Gets the current pixel matrix to be displayed.
+     * 
+     * @return a copy of the current pixel matrix
      */
     public int[][] getCurrentPixels() {
         return copyPixels(currentPixels);
     }
 
     /**
-     * Apply invert colors operation
-     */
-    public void invertColors() {
-        if (processedPixels != null) {
-            this.processedPixels = invertColors.process(processedPixels);
-            this.currentPixels = copyPixels(processedPixels);
-        }
-    }
-
-    /**
-     * Apply grayscale operation
-     */
-    public void grayScale() {
-        if (processedPixels != null) {
-            this.processedPixels = grayScale.process(processedPixels);
-            this.currentPixels = copyPixels(processedPixels);
-        }
-    }
-
-    /**
-     * Apply blur operation
-     */
-    public void blur() {
-        if (processedPixels != null) {
-            this.processedPixels = blur.process(processedPixels);
-            this.currentPixels = copyPixels(processedPixels);
-        }
-    }
-
-    /**
-     * Apply sharpening operation
-     */
-    public void sharpen() {
-        if (processedPixels != null) {
-            this.processedPixels = sharpening.process(processedPixels);
-            this.currentPixels = copyPixels(processedPixels);
-        }
-    }
-
-    /**
-     * Apply window/level contrast adjustment
-     * @param level nedre gräns för det aktiva intervallet
-     * @param window storlek på intervallet
+     * Applies Window/Level contrast adjustment to the image.* 
+     * @param level active range (0-255)
+     * @param window size of the range 
      */
     public void applyWindowLevel(int level, int window) {
         if (processedPixels != null) {
-            // Bypass: om window är 0 eller mindre, visa bilden utan W/L-justering
             if (window <= 0) {
                 this.currentPixels = copyPixels(processedPixels);
                 return;
@@ -105,28 +66,60 @@ public class ImageProcessorModel {
     }
 
     /**
-     * Revert to original image
-     */
-    public void revertToOriginal() {
-        if (originalPixels != null) {
-            this.processedPixels = copyPixels(originalPixels);
-            this.currentPixels = copyPixels(originalPixels);
-        }
-    }
-
-    /**
-     * Calculate histogram for current pixels
-     * @return histogram data as int[256][3] matrix
+     * Calculates histogram for the current image.
+     * @return histogram data as an int[256][3] matrix where first index is intensity (0-255)
+     *         and second index is color (0=red, 1=green, 2=blue)
      */
     public int[][] calculateHistogram() {
         if (currentPixels != null) {
             return histoGram.calculateHistogram(currentPixels);
         }
-        return new int[256][3]; // Empty histogram
+        return new int[256][3]; 
     }
-SKAPA ENUM, SWITCH CASE, ALERT I VIEW, UML, FÖRENKING KRING FUNTKIONSANROP
+
     /**
-     * Helper method to create a deep copy of pixel matrix
+     * Applies an image processing operation based on the specified operation type.
+     * centralizing all operation handling
+     * @param operation chosen image processing operation
+     */
+    public void applyOperation(ImageOperation operation) {
+        if (processedPixels == null) return;
+        
+        switch (operation) {
+            case GRAYSCALE:
+                this.processedPixels = grayScale.process(processedPixels);
+                this.currentPixels = copyPixels(processedPixels);
+                break;
+                
+            case BLUR:
+                this.processedPixels = blur.process(processedPixels);
+                this.currentPixels = copyPixels(processedPixels);
+                break;
+                
+            case SHARPEN:
+                this.processedPixels = sharpening.process(processedPixels);
+                this.currentPixels = copyPixels(processedPixels);
+                break;
+                
+            case INVERT:
+                this.processedPixels = invertColors.process(processedPixels);
+                this.currentPixels = copyPixels(processedPixels);
+                break;
+                
+            case RESET_TO_ORIGINAL:
+                if (originalPixels != null) {
+                    this.processedPixels = copyPixels(originalPixels);
+                    this.currentPixels = copyPixels(originalPixels);
+                }
+                break;
+        }
+    }
+
+    /**
+     * Helper method to create a deep copy of a pixel matrix.
+     * Used to ensure that original data is not modified.
+     * @param pixels the pixel matrix to be copied
+     * @return a new pixel matrix with the same values, or null if input is null
      */
     private int[][] copyPixels(int[][] pixels) {
         if (pixels == null) return null;

@@ -3,15 +3,15 @@ package lab4edisochdanils.model;
 import lab4edisochdanils.utils.PixelConverter;
 
 /**
- * Window/Level kontrast-justering för medicinska gråskalebilder.
+ * Window/Level contrast adjustment.
  */
 public class WindowLevel implements IPixelProcessor {
 
-    private int level;   // "Foten" på kurvan - nedre gräns för det aktiva intervallet
-    private int window;  // Bredd på det aktiva intervallet där linjär skalning sker
+    private int level;
+    private int window;
 
     /**
-     * Skapar en WindowLevel-processor med standardvärden.
+     * Default constructor.
      */
     public WindowLevel() {
         this.level = 0;
@@ -19,10 +19,9 @@ public class WindowLevel implements IPixelProcessor {
     }
 
     /**
-     * Skapar en WindowLevel-processor med angivna värden.
-     *
-     * @param level "foten" på kurvan, nedre gräns för det aktiva intervallet (0-255)
-     * @param window bredden på det aktiva intervallet (1-255)
+     * Constructor with parameters.
+     * @param level lower ceiling (0-255)
+     * @param window range size (1-255)
      */
     public WindowLevel(int level, int window) {
         this.level = level;
@@ -30,9 +29,8 @@ public class WindowLevel implements IPixelProcessor {
     }
 
     /**
-     * Sätter level-värdet (foten på kurvan).
-     *
-     * @param level värde mellan 0 och 255
+     * Sets level value.
+     * @param level value (0-255)
      */
     public void setLevel(int level) {
         if (level < 0) level = 0;
@@ -41,9 +39,8 @@ public class WindowLevel implements IPixelProcessor {
     }
 
     /**
-     * Sätter window-värdet (bredden på det aktiva intervallet).
-     *
-     * @param window värde mellan 1 och 255
+     * Sets window value.
+     * @param window value (1-255)
      */
     public void setWindow(int window) {
         if (window < 1) window = 1;
@@ -52,29 +49,25 @@ public class WindowLevel implements IPixelProcessor {
     }
 
     /**
-     * Hämtar nuvarande level-värde.
-     *
-     * @return level-värdet
+     * Gets level value.
+     * @return level
      */
     public int getLevel() {
         return level;
     }
 
     /**
-     * Hämtar nuvarande window-värde.
-     *
-     * @return window-värdet
+     * Gets window value.
+     * @return window
      */
     public int getWindow() {
         return window;
     }
 
     /**
-     * Applicerar window/level-justering på en pixelmatris.
-     * Fungerar bäst på gråskalebilder (t.ex. medicinska skanningar).
-     *
-     * @param originalPixels den ursprungliga pixelmatrisen
-     * @return en ny pixelmatris med justerad kontrast
+     * Applies window/level adjustment.
+     * @param originalPixels original pixel matrix
+     * @return adjusted pixel matrix
      */
     @Override
     public int[][] process(int[][] originalPixels) {
@@ -92,35 +85,32 @@ public class WindowLevel implements IPixelProcessor {
     }
 
     /**
-     * Justerar intensiteten för en enskild pixel enligt window/level-kurvan.
-     *
-     * @param pixel originalbildens pixel
-     * @return den justerade pixeln som ett ARGB-värde
+     * Adjusts a single pixel.
+     * @param pixel original pixel
+     * @return adjusted pixel
      */
     private int adjustPixel(int pixel) {
-        // Extrahera färgkomponenter
+        // Extract colors
         int red = PixelConverter.getRed(pixel);
         int green = PixelConverter.getGreen(pixel);
         int blue = PixelConverter.getBlue(pixel);
         int alpha = PixelConverter.getAlpha(pixel);
 
-        // Beräkna gråskalevärde (medelvärde av RGB)
+        // Calculate grayscale intensity
         int intensity = (red + green + blue) / 3;
 
-        // Tillämpa window/level-mappning enligt kurvan
+        // Apply window/level mapping
         int newIntensity = applyWindowLevel(intensity);
 
-        // Skapa ny pixel med justerad intensitet för alla färgkanaler
         return PixelConverter.toArgbPixel(alpha, newIntensity, newIntensity, newIntensity);
     }
 
     /**
-     * Tillämpar window/level-mappningen enligt den linjära kurvan.
-     * @param intensity det ursprungliga intensitetsvärdet (0-255)
-     * @return det mappade intensitetsvärdet (0-255)
+     * Applies window/level mapping.
+     * @param intensity original intensity (0-255)
+     * @return mapped intensity (0-255)
      */
     private int applyWindowLevel(int intensity) {
-        // Före foten på kurvan -> sätt till 0 (svart)
         if (intensity < level) {
             return 0;
         }
@@ -130,7 +120,7 @@ public class WindowLevel implements IPixelProcessor {
             return 255;
         }
         
-        double k = 255.0 / window;  // Lutningen på kurvan
+        double k = 255.0 / window;
         double output = k * (intensity - level);
 
         return (int) Math.round(output);

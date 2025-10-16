@@ -3,9 +3,12 @@ package lab4edisochdanils.model;
 import lab4edisochdanils.utils.PixelConverter;
 
 /**
- * Blur-filter som gör en bild suddigare.
- * Använder en 3x3 matris med viktade medelvärden
- * för att blanda varje pixel med sina 8 närmaste grannar.
+ * Blur filter that makes an image blurrier.
+ * Uses a 3x3 matrix with weighted averages
+ * to blend each pixel with its 8 nearest neighbors.
+ * 
+ * @author Edis and Danils
+ * @version 1.0
  */
 public class Blur implements IPixelProcessor {
 

@@ -1,9 +1,23 @@
 package lab4edisochdanils.model;
 import static lab4edisochdanils.utils.PixelConverter.*;
 
-
+/**
+ * Histogram calculation for images.
+ * Calculates the frequency of intensity values for each color channel (red, green, blue) in an image.
+ * 
+ * @author Edis and Danils
+ * @version 1.0
+ */
 public class Histogram {
     
+    /**
+     * Calculates histogram for a pixel matrix.
+     * Counts how many pixels have each intensity value (0-255) for each color channel.
+     * 
+     * @param pixels the pixel matrix to analyze
+     * @return an int[256][3] matrix where first index (0-255) is intensity and 
+     *         second index is color (0=red, 1=green, 2=blue). The value is the number of pixels.
+     */
     public int[][] calculateHistogram(int[][] pixels){
         int[][] histogram = new int[256][3]; // 256 intensitetsvärden, 3 färger (RGB)
 

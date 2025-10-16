@@ -74,6 +74,22 @@
           </execution>
         </executions>
       </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <version>3.6.0</version>
+        <configuration>
+          <sourcepath>${project.basedir}/src/main/java/lab4edisochdanils/model</sourcepath>
+          <show>public</show>
+          <encoding>UTF-8</encoding>
+          <charset>UTF-8</charset>
+          <docencoding>UTF-8</docencoding>
+          <locale>en_US</locale>
+          <windowtitle>Image Processing Model - JavaDoc</windowtitle>
+          <doctitle>Image Processing Model</doctitle>
+          <bottom>Copyright © 2025 Edis and Danils. KTH HI1027.</bottom>
+        </configuration>
+      </plugin>
     </plugins>
   </build>
 </project>

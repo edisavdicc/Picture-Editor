@@ -3,8 +3,7 @@ package lab4edisochdanils.model;
 import lab4edisochdanils.utils.PixelConverter;
 
 /**
- * Sharpening-filter som gör kanter i bilden skarpare.
- 
+ * Sharpens edges using unsharp masking.
  */
 public class Sharpening implements IPixelProcessor {
 
@@ -15,20 +14,19 @@ public class Sharpening implements IPixelProcessor {
     }
 
     /**
-     * Applicerar sharpening-effekten på en pixelmatris.
-     *
-     * @param originalPixels den ursprungliga pixelmatrisen
-     * @return en ny pixelmatris med sharpening-effekt applicerad
+     * Sharpens the image.
+     * @param originalPixels original pixel matrix
+     * @return sharpened pixel matrix
      */
     @Override
     public int[][] process(int[][] originalPixels) {
         int width = originalPixels.length;
         int height = originalPixels[0].length;
 
-        // Skapa suddig version av bilden
+        // Create blurred version
         int[][] blurredPixels = blur.process(originalPixels);
 
-       // För varje pixel, beräkna: original + (original - blurred)
+        // Apply sharpening formula: original + (original - blurred)
         int[][] sharpenedPixels = new int[width][height];
 
         for (int x = 0; x < width; x++) {
@@ -44,41 +42,38 @@ public class Sharpening implements IPixelProcessor {
     }
 
     /**
-     * Beräknar det skärpta värdet för en enskild pixel.
-     * Formel: sharpened = original + (original - blurred)
-     *
-     * @param originalPixel originalbildens pixel
-     * @param blurredPixel den suddiga bildens pixel
-     * @return den skärpta pixeln som ett ARGB-värde
+     * Sharpens a single pixel.
+     * @param originalPixel original pixel
+     * @param blurredPixel blurred pixel
+     * @return sharpened pixel
      */
     private int sharpenPixel(int originalPixel, int blurredPixel) {
-        // Extrahera färgkomponenter från original
+        // Extract original colors
         int origRed = PixelConverter.getRed(originalPixel);
         int origGreen = PixelConverter.getGreen(originalPixel);
         int origBlue = PixelConverter.getBlue(originalPixel);
         int alpha = PixelConverter.getAlpha(originalPixel);
 
-        // Extrahera färgkomponenter från blurred
+        // Extract blurred colors
         int blurRed = PixelConverter.getRed(blurredPixel);
         int blurGreen = PixelConverter.getGreen(blurredPixel);
         int blurBlue = PixelConverter.getBlue(blurredPixel);
 
-        // Beräkna skillnad (original - blurred)
+        // Calculate difference
         int diffRed = origRed - blurRed;
         int diffGreen = origGreen - blurGreen;
         int diffBlue = origBlue - blurBlue;
 
-       
-        int sharpRed = origRed + diffRed;      // = 2*origRed - blurRed
-        int sharpGreen = origGreen + diffGreen;  // = 2*origGreen - blurGreen
-        int sharpBlue = origBlue + diffBlue;    // = 2*origBlue - blurBlue
-
-        // Begränsa värden 
+        // Apply sharpening
+        int sharpRed = origRed + diffRed;
+        int sharpGreen = origGreen + diffGreen;
+        int sharpBlue = origBlue + diffBlue;
+        
         if (sharpRed < 0) sharpRed = 0;
         if (sharpRed > 255) sharpRed = 255;
 
         if (sharpGreen < 0) sharpGreen = 0;
-        if (sharpGreen > 255) sharpGreen = 255; 
+        if (sharpGreen > 255) sharpGreen = 255;
 
         if (sharpBlue < 0) sharpBlue = 0;
         if (sharpBlue > 255) sharpBlue = 255;

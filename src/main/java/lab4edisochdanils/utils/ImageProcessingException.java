@@ -14,9 +14,6 @@ public class ImageProcessingException extends IOException {
         super(message);
     }
     
-    /**
-     * Visar ett felmeddelande till användaren med Alert
-     */
     public static void showError(String title, String message) {
         Alert alert = new Alert(AlertType.ERROR);
         alert.setTitle(title);
