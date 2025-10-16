@@ -117,7 +117,7 @@ public class ImageProcessorView extends VBox {
             controller.onWindowLevelChanged((int) levelSlider.getValue(), (int) windowSlider.getValue())
         );
 
-        // Titlar ovanför respektive slider (utan numeriska etiketter under)
+      
         Label windowTitle = new Label("Window");
         VBox windowBox = new VBox(5, windowTitle, windowSlider);
 

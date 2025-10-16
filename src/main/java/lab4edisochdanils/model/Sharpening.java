@@ -25,10 +25,10 @@ public class Sharpening implements IPixelProcessor {
         int width = originalPixels.length;
         int height = originalPixels[0].length;
 
-        // Steg 1: Skapa suddig version av bilden
+        // Skapa suddig version av bilden
         int[][] blurredPixels = blur.process(originalPixels);
 
-        // Steg 2-4: För varje pixel, beräkna: original + (original - blurred)
+       // För varje pixel, beräkna: original + (original - blurred)
         int[][] sharpenedPixels = new int[width][height];
 
         for (int x = 0; x < width; x++) {
@@ -68,12 +68,12 @@ public class Sharpening implements IPixelProcessor {
         int diffGreen = origGreen - blurGreen;
         int diffBlue = origBlue - blurBlue;
 
-        // Addera skillnaden till originalet (original + difference)
+       
         int sharpRed = origRed + diffRed;      // = 2*origRed - blurRed
         int sharpGreen = origGreen + diffGreen;  // = 2*origGreen - blurGreen
         int sharpBlue = origBlue + diffBlue;    // = 2*origBlue - blurBlue
 
-        // Begränsa värden till [0, 255] med if-satser
+        // Begränsa värden 
         if (sharpRed < 0) sharpRed = 0;
         if (sharpRed > 255) sharpRed = 255;
 

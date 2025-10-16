@@ -3,17 +3,15 @@ package lab4edisochdanils.utils;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 
+import java.io.IOException;
+
 /**
  * Custom exception for image processing errors.
  */
-public class ImageProcessingException extends Exception {
+public class ImageProcessingException extends IOException {
     
     public ImageProcessingException(String message) {
         super(message);
-    }
-    
-    public ImageProcessingException(String message, Throwable cause) {
-        super(message, cause);
     }
     
     /**

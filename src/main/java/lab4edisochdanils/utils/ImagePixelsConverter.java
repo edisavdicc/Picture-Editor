@@ -46,7 +46,7 @@ public class ImagePixelsConverter {
         if (pixelMatrix[0] == null || pixelMatrix[0].length == 0) {
             throw new ImageProcessingException("Ogiltiga dimensioner");
         }
-
+        
         int width = pixelMatrix.length;
         int height = pixelMatrix[0].length;
 

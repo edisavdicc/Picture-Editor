@@ -99,7 +99,7 @@ public class ImageProcessorModel {
 
             windowLevel.setLevel(level);
             windowLevel.setWindow(window);
-            // Applicera ALLTID på processedPixels, inte på redan W/L-justerade pixlar
+            // Applicera på processedPixels
             this.currentPixels = windowLevel.process(processedPixels);
         }
     }
@@ -124,7 +124,7 @@ public class ImageProcessorModel {
         }
         return new int[256][3]; // Empty histogram
     }
-
+SKAPA ENUM, SWITCH CASE, ALERT I VIEW, UML, FÖRENKING KRING FUNTKIONSANROP
     /**
      * Helper method to create a deep copy of pixel matrix
      */
